@@ -1,0 +1,28 @@
+/*
+	@author  Thabelo mmbengeni
+	css modify bootstarp custom styles
+ */
+.custom-list {
+    padding: 6px;
+}
+.custom-list:hover {
+	cursor: pointer;
+}
+.user-action:hover{
+	cursor: pointer;	
+}
+.border-list{
+	border: 1px solid #eee;
+	border-radius: 3px;
+	padding: 6px;
+	margin: 0 0 10px;
+}
+.inner-comments {
+	font-size: 12px;
+}
+.split-div {
+	margin: 0 0 3px;
+}
+.comment-thumb{
+	font-size: 11px;
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title> Sentiment </title>
+		<meta name="description" content="Sentiment analysis">
+		<meta name="author" content="thabelo@gmail.com">
+
+	    <script src="js/libs/jquery.min.js"> </script>
+
+		<script type="text/javascript" src="js/libs/bootstrap-daterangepicker/moment.min.js"></script>		 
+		<script type="text/javascript" src="js/libs/bootstrap-daterangepicker/daterangepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="js/libs/bootstrap-daterangepicker/daterangepicker.css" />
+
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+
+	    <script src="js/libs/bootstrap.min.js"> </script>
+	    <script src="js/libs/scripts.js"> </script>
+
+	    <script src="js/libs/knockout-2.1.0.js"> </script>
+	    <script src="js/libs/knockout.mapping-latest.js"> </script>
+	    <script src="js/libs/pager.js"> </script>
+	    <script src="js/libs/underscore-min.js"> </script>
+	</head>
+	<!-- body -->
+	<body id="mainAppContainer">
+		    <div class="container-fluid" >
+			<div class="row">
+				<div class="col-md-12">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+								 <span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+							</button> <a class="navbar-brand" href="#">Smartwebs</a>
+						</div>
+						
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="user-action">
+									<a onclick="app.filterResultsByType('.all-children-comments');">All &nbsp;<span class="glyphicon right pull-right glyphicon-eye-open"></span></a>
+								</li>
+								<li class="user-action">
+									<a onclick="app.filterResultsByType('.bg-danger');"> Sad &nbsp;<span class="glyphicon right pull-right glyphicon-thumbs-down"></span></a>
+								</li>
+								<li class="user-action">
+									<a onclick="app.filterResultsByType('.bg-success');"> Happy &nbsp;<span class="glyphicon right pull-right glyphicon-thumbs-up"></span></a>
+								</li>
+							</ul>
+						</div>
+						
+					</nav>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="alert alert-danger alert-dismissable hidden">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+									×
+								</button>
+								<h4>
+									Alert!
+								</h4> <span id="error-message"></span>
+							</div>
+
+							<div class="alert alert-success alert-dismissable hidden">
+								<span id="info-message"></span>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="navbar-form navbar-left col-md-12" role="search" >
+								<input id="searchWord" type="text" class="form-control" >	
+								<button class="btn btn-primary" onclick="app.searchWord()">
+									Submit
+								</button>
+							</div>
+						</div>
+						<div class="navbar-form navbar-left col-md-12" >
+							<input name='daterange' type="text" class="form-control"/> 
+						</div>
+						<div class="navbar-form navbar-left col-md-12" >
+							<span class="bg-success">
+								(<span data-bind="text: commentsVm.allCountPositive"> </span>) Happy
+							</span>
+							&nbsp;
+							<span class="bg-danger">
+								(<span data-bind="text: commentsVm.allCountNegative"> </span>) Sad							
+							</span>
+						</div>
+					</div>
+					<!-- List Row -->
+					<div class="row all-comments hidden">
+						<div class="col-md-12" data-bind="foreach: commentsVm.commentsList">
+							<!-- lists -->
+							<div class="border-list col-md-12 comment-main-list" data-bind="css : { 'bg-green' : cState(), 'bg-red' : !cState(), 'hidden' : isHidden() }">
+								<p class="custom-list"  > 
+									<span class="glyphicon glyphicon glyphicon-plus left pull-left" data-bind="attr :{href:'#'+id}" data-toggle="collapse"> </span> &nbsp; 
+									<p data-bind="text: dateTime"> </p>
+									<p data-bind="text: title, attr :{href:'#'+id}" data-toggle="collapse"> </p>
+									
+									<a data-bind="attr : {href: url}" target="_blank">   [origin link] </a>
+									<a data-bind="click: commentsVm.loadAllComments" >   [View all comments] </a>
+									<a data-bind="click: commentsVm.clearAllComments" >  [Hide comments] </a>
+									<a data-bind="click: commentsVm.clearAllSentiment" > [Clear sentiment] </a>
+									<span class="counter bg-success">
+										(<span data-bind="text: countPositive"> </span>) Happy
+									</span>
+									&nbsp;
+									<span class="counter bg-danger">
+										(<span data-bind="text: countNegative"> </span>) Sad							
+									</span>
+									<!-- icons -->
+										<span class="glyphicon left pull-right comment-thumb" data-bind="css : { 'glyphicon-thumbs-up' : cState(), 'glyphicon-thumbs-down' : !cState() }"> Latest comment </span>
+								</p>
+								<!-- Comments -->
+								<p id="collapseOne" class="custom-list collapse  bg-info" data-bind="text: comment, attr: {id: id}"> </p>
+
+								<div data-bind="foreach: allComments " > 
+									<div class="all-children-comments split-div custom-list comment-main-list" data-bind="css : { 'bg-success' : $data.cState(), 'bg-danger' : !$data.cState(),'hidden' : $data.isHidden }" >
+										<span class="custom-list inner-comments" data-bind="text: $data.comment"> </span>
+										<!-- icons -->
+										<span class="glyphicon right pull-right" data-bind="css : { 'glyphicon-thumbs-up' : $data.cState(), 'glyphicon-thumbs-down' : !$data.cState() }"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/app/vm/CommentsViewModel.js"> </script>
+	<script src="js/app/vm/AppViewModel.js"> </script>
+	<script src="js/app/main.js"> </script>
+</html>
