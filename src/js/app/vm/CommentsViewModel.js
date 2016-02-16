@@ -118,6 +118,7 @@ var commentsViewModel = function () {
 		commentsVm.commentsList()[data.index].countNegative(0);
 		commentsVm.commentsList()[data.index].countPositive(0);
 		commentsVm.commentsList()[data.index].allComments.removeAll();
+		app.calculateValues();
 	};
 
 	/*
